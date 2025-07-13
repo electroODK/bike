@@ -1,6 +1,6 @@
 
 import { DataTypes } from 'sequelize';
-import sequelize from '../utils/db.js';
+import sequelize from '../middleware/db.js';
 
 const Bike = sequelize.define('Bike', {
   id: {
@@ -22,7 +22,7 @@ const Bike = sequelize.define('Bike', {
   },
   category_id: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: false,
   },
   information: {
     type: DataTypes.TEXT,

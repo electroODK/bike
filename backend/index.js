@@ -1,7 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { sequelize } from './models/index.js';
+import sequelize from './src/utils/db.js';
+import bikeRouters from './src/routes/bikes.routes.js';
 
 dotenv.config();
 
@@ -9,12 +10,13 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use("/api/bike", bikeRouters )
+
+const PORT = process.env.PORT || 1488;
 
 app.get('/', (req, res) => {
   res.send('🚴 Вело-сервер работает!');
 });
-
-const PORT = process.env.PORT || 1488;
 
 sequelize.sync({ alter: true })
   .then(() => {

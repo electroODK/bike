@@ -4,7 +4,7 @@ export const addBikeController = async (req, res) => {
     try{
         const {name, price, size , category_id, information, photo, material_id, diametr, number_of_velocities, is_amortising, is_rented} = req.body
 
-        if (!name || !price || !size || !category_id || !information || !photo       || !is_amortising || !is_rented){
+        if (!name || !price || !size || !category_id || !information || !photo || !material_id || !is_amortising || !is_rented){
             res.status(400).json({
                 message:"Please fill in all fields",
                 error: true,

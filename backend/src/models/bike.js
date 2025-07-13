@@ -1,6 +1,6 @@
 
 import { DataTypes } from 'sequelize';
-import sequelize from '../middleware/db.js';
+import sequelize from '../utils/db.js';
 
 const Bike = sequelize.define('Bike', {
   id: {
@@ -26,6 +26,7 @@ const Bike = sequelize.define('Bike', {
   },
   information: {
     type: DataTypes.TEXT,
+    allowNull: true 
   },
   photo: {
     type: DataTypes.ARRAY(DataTypes.TEXT),
@@ -33,7 +34,7 @@ const Bike = sequelize.define('Bike', {
   },
   material_id: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: false,
   },
   diametr: {
     type: DataTypes.INTEGER,

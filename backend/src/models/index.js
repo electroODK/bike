@@ -5,7 +5,8 @@ import Bike from './bike.js';
 import Category from './category.js';
 import Material from './material.js';
 import Rental from './rental.js';
-import RentalBike from './rentalBike.model.js'; 
+import RentalBike from './rentalBike.model.js';
+import Station from './station.model.js';  
 
 User.hasMany(Rental, { foreignKey: 'user_id', as: 'rentals' });
 Rental.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
@@ -23,7 +24,11 @@ Bike.belongsToMany(Rental, {
   as: 'rentals',
 });
 
+Station.hasMany(Rental, { foreignKey: 'start_station_id', as: 'rentals_start' });
+Station.hasMany(Rental, { foreignKey: 'end_station_id', as: 'rentals_end' });
 
+Rental.belongsTo(Station, { foreignKey: 'start_station_id', as: 'start_station' });
+Rental.belongsTo(Station, { foreignKey: 'end_station_id', as: 'end_station' });
 
 Category.hasMany(Bike, { foreignKey: 'category_id', as: 'bikes' });
 Bike.belongsTo(Category, { foreignKey: 'category_id', as: 'category' });
@@ -39,4 +44,5 @@ export {
   Material,
   Rental,
   RentalBike,
+  Station, 
 };

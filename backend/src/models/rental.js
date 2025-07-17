@@ -1,5 +1,3 @@
-// models/rental.model.js
-
 import { DataTypes } from 'sequelize';
 import sequelize from '../utils/db.js';
 
@@ -8,12 +6,13 @@ const Rental = sequelize.define(
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     user_id: { type: DataTypes.INTEGER, allowNull: false },
-    bike_id: { type: DataTypes.INTEGER, allowNull: false },
-    start_date: { type: DataTypes.DATE, allowNull: false },
-    end_date: { type: DataTypes.DATE, allowNull: false },
+    start_date: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
+    end_date: { type: DataTypes.DATE, allowNull: true },
     price: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
-    status: { type: DataTypes.STRING, defaultValue: 'active' },
-    helmet : {type: DataTypes.BOOLEAN}
+    status: {
+      type: DataTypes.ENUM('active', 'finished', 'cancelled'),
+      defaultValue: 'active'
+    },
   },
   {
     tableName: 'rentals',

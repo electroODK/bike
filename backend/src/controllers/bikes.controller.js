@@ -53,7 +53,6 @@ export const addBikeController = async (req, res) => {
       success: true,
     });
   } catch (err) {
-    console.error(err);
     return res.status(500).json({
       message: "Error creating bike",
       error: true,
@@ -120,7 +119,7 @@ export const updateBikeController = async (req, res) => {
     return res.status(500).json({
       message: "Error updating bike",
       error: true,
-      success: false,
+      success: false,                   
     });
   }
 };
@@ -163,44 +162,65 @@ export const deleteBikeController = async (req, res) => {
   }
 };
 
-// 📌 Получение списка всех велосипедов / одного
 export const getBikesController = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { status } = req.query;
+    const { id } = req.params; // For getting bike by ID
+    const { category_id, material_id, status, size } = req.query; // Query parameters for filtering
+    let where = {}; // Sequelize where clause for filtering
 
+    // If ID is provided, fetch a single bike
     if (id) {
       const bike = await Bike.findByPk(id);
       if (!bike) {
         return res.status(404).json({
-          message: "Bike not found",
+          message: 'Bike not found',
           error: true,
           success: false,
         });
       }
-
       return res.status(200).json({
-        message: "Bike retrieved successfully",
         data: bike.toJSON(),
+        message: 'Bike retrieved successfully',
         error: false,
         success: true,
       });
     }
 
-    const where = {};
-    if (status) where.status = status;
+    // Build where clause based on query parameters
+    if (category_id) {
+      where.category_id = category_id;
+    }
+    if (material_id) {
+      where.material_id = material_id;
+    }
+    if (status) {
+      where.status = status;
+    }
+    if (size) {
+      where.size = size;
+    }
 
-    const bikes = await Bike.findAll({ where });
+    // Fetch bikes with filters
+    const bikes = await Bike.findAll({where});
+    
+    // Check if any bikes were found
+    if (bikes.length === 0) {
+      return res.status(404).json({
+        message: 'No bikes found matching the criteria',
+        error: true,
+        success: false,
+      });
+    }
 
     return res.status(200).json({
-      message: "Bikes retrieved successfully",
-      data: bikes.map((b) => b.toJSON()),
+      data: bikes.toJSON(),
+      message: 'Bikes retrieved successfully',
       error: false,
       success: true,
     });
   } catch (err) {
     return res.status(500).json({
-      message: "Error retrieving bikes",
+      message: 'Error retrieving bikes',
       error: true,
       success: false,
     });

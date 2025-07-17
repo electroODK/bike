@@ -13,6 +13,7 @@ const Rental = sequelize.define(
     end_date: { type: DataTypes.DATE, allowNull: false },
     price: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
     status: { type: DataTypes.STRING, defaultValue: 'active' },
+    helmet : {type: DataTypes.BOOLEAN}
   },
   {
     tableName: 'rentals',

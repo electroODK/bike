@@ -13,6 +13,8 @@ Rental.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 Bike.hasMany(Rental, { foreignKey: 'bike_id', as: 'rentals' });
 Rental.belongsTo(Bike, { foreignKey: 'bike_id', as: 'bike' });
 
+
+
 Category.hasMany(Bike, { foreignKey: 'category_id', as: 'bikes' });
 Bike.belongsTo(Category, { foreignKey: 'category_id', as: 'category' });
 

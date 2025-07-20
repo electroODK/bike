@@ -2,7 +2,9 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { sequelize } from './src/models/index.js';
-import bikeRouters from './src/routes/bikes.routes.js';
+import bikeRoutes from './src/routes/bike.routes.js';
+import categoryRoutes from './src/routes/category.routes.js';
+import materialRoutes from './src/routes/material.routes.js';
 
 dotenv.config();
 
@@ -10,7 +12,9 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use("/api/bike", bikeRouters )
+app.use("/api/bike", bikeRoutes )
+app.use("/api/category", categoryRoutes)
+app.use("/api/material", materialRoutes)
 
 const PORT = process.env.PORT || 1488;
 

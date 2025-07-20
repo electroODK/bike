@@ -10,7 +10,6 @@ const Bike = sequelize.define(
     size: { type: DataTypes.ENUM('XS', 'S', 'M', 'L', 'XL'), allowNull: false },
     category_id: { type: DataTypes.INTEGER, allowNull: false },
     material_id: { type: DataTypes.INTEGER, allowNull: false },
-    station_id: { type: DataTypes.INTEGER, allowNull: true },
     information: { type: DataTypes.TEXT },
     photo: { type: DataTypes.ARRAY(DataTypes.TEXT), defaultValue: [] },
     diametr: { type: DataTypes.INTEGER },

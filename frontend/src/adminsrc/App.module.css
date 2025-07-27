@@ -1,0 +1,25 @@
+/* App.module.css */
+
+.appContainer {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f3f4f6;
+}
+
+.pageContent {
+  flex: 1;
+  padding: 1.5rem;
+  background-color: #f9fafb;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1.5rem;
+}
+
+.subtitle {
+  color: #4b5563;
+  font-size: 1rem;
+}

@@ -25,9 +25,9 @@ Bike.belongsToMany(Rental, {
 });
 
 Station.hasMany(Rental, { foreignKey: 'start_station_id', as: 'rentals_start' });
-Station.hasMany(Rental, { foreignKey: 'end_station_id', as: 'rentals_end' });
-
 Rental.belongsTo(Station, { foreignKey: 'start_station_id', as: 'start_station' });
+
+Station.hasMany(Rental, { foreignKey: 'end_station_id', as: 'rentals_end' });
 Rental.belongsTo(Station, { foreignKey: 'end_station_id', as: 'end_station' });
 
 Category.hasMany(Bike, { foreignKey: 'category_id', as: 'bikes' });

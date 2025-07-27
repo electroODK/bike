@@ -8,10 +8,20 @@ import materialRoutes from './src/routes/material.routes.js';
 import requestlogger from './src/middleware/requestLogger.js';
 import errorHandler from './src/middleware/errorHandler.js';
 import httpLogger from './src/middleware/httpLogger.js';
+import userRoutes from './src/routes/user.routes.js';
 
 dotenv.config();
 
 const app = express();
+
+app.use(cors());
+app.use(express.json());
+app.use("/api/user", userRoutes);
+// app.use("/api/rental", rentalRoutes); 
+app.use("/api/bike", bikeRoutes )
+app.use("/api/category", categoryRoutes)
+app.use("/api/material", materialRoutes)
+
 const PORT = process.env.PORT || 1488;
 
 
@@ -19,11 +29,6 @@ app.use(httpLogger);
 app.use(requestlogger);
 app.use(cors());
 app.use(express.json());
-
-
-app.use("/api/bike", bikeRoutes);
-app.use("/api/category", categoryRoutes);
-app.use("/api/material", materialRoutes);
 
 
 app.use((req, res) => {

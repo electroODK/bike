@@ -10,8 +10,7 @@ import {
    resetPasswordController,
    refreshTokenController
 } from "../controllers/user.controller.js"
-import auth from "../middlewares/auth.js"
-import { authMiddleware } from "../middleware/auth.js";
+import {authMiddleware} from "../middleware/auth.js"
 
 const userRoutes = Router();
 

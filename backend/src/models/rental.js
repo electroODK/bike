@@ -6,8 +6,7 @@ const Rental = sequelize.define('Rental', {
   user_id: { type: DataTypes.INTEGER, allowNull: false },
 
   start_station_id: { type: DataTypes.INTEGER, allowNull: false },
-  end_station_id: { type: DataTypes.INTEGER, allowNull: true }, // может быть null до возврата
-
+  end_station_id: { type: DataTypes.INTEGER, allowNull: true }, 
   start_date: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
   end_date: { type: DataTypes.DATE, allowNull: true },
 

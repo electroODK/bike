@@ -4,7 +4,7 @@ import Bike from "../models/bike.js";
 export const addStationController = async (req, res) =>{
     try{
         const {name , location, capacity} = req.body
-        if (!name || !location){
+        if (!name || !location || !capacity){
             res.status(400).json({
                 message: "Fill in all required fields",
                 error: true,
@@ -16,7 +16,7 @@ export const addStationController = async (req, res) =>{
                 return res.status(404).json({
                     message: "Capacity must be positive",
                     error: true,
-                    success: false
+                    success: false 
                 })
             }
         }   

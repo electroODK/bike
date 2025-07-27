@@ -1,12 +1,12 @@
-import sequelize from '../utils/db.js';
+import sequelize from '../config/database.js';
 
 import User from './user.js';
 import Bike from './bike.js';
 import Category from './category.js';
 import Material from './material.js';
 import Rental from './rental.js';
-import RentalBike from './rentalBike.model.js';
-import Station from './station.model.js';  
+import RentalBike from './rentalBike.js';
+import Station from './station.js';  
 
 User.hasMany(Rental, { foreignKey: 'user_id', as: 'rentals' });
 Rental.belongsTo(User, { foreignKey: 'user_id', as: 'user' });

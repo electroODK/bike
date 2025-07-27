@@ -1,20 +1,26 @@
 import Rental from '../models/rental.js';
 import { Op } from 'sequelize';
 
-
 //  Создает новую аренду велосипеда
- 
+
 export const createRental = async (req, res) => {
   try {
     const { userId, bikeId, startDate, endDate } = req.body;
 
     // Валидация полей
     if (!userId || !bikeId || !startDate || !endDate) {
-      return res.status(400).json({ message: 'All fields are required', success: false });
+      return res
+        .status(400)
+        .json({ message: 'All fields are required', success: false });
     }
 
     if (new Date(endDate) <= new Date(startDate)) {
-      return res.status(400).json({ message: 'The end date must be later than the start date.', success: false });
+      return res
+        .status(400)
+        .json({
+          message: 'The end date must be later than the start date.',
+          success: false,
+        });
     }
 
     // Проверка существования пользователя и велосипеда
@@ -23,7 +29,9 @@ export const createRental = async (req, res) => {
       bike.findByPk(bikeId),
     ]);
     if (!user || !bike) {
-      return res.status(404).json({ message: 'User or bike not found', success: false });
+      return res
+        .status(404)
+        .json({ message: 'User or bike not found', success: false });
     }
 
     // Проверка занятости велосипеда
@@ -38,7 +46,12 @@ export const createRental = async (req, res) => {
     });
 
     if (isBikeBusy) {
-      return res.status(409).json({ message: 'The bike is booked for the selected dates', success: false });
+      return res
+        .status(409)
+        .json({
+          message: 'The bike is booked for the selected dates',
+          success: false,
+        });
     }
 
     // Создание аренды
@@ -59,13 +72,14 @@ export const createRental = async (req, res) => {
     });
   } catch (err) {
     console.error('error in createRental:', err);
-    return res.status(500).json({ message: 'Server error', error: err.message, success: false });
+    return res
+      .status(500)
+      .json({ message: 'Server error', error: err.message, success: false });
   }
 };
 
-
 //  Получает все аренды с пагинацией
- 
+
 export const getAllRentals = async (req, res) => {
   try {
     const { page = 1, limit = 10 } = req.query;
@@ -84,7 +98,9 @@ export const getAllRentals = async (req, res) => {
     return res.status(200).json({ rentals: rentals || [], success: true });
   } catch (err) {
     console.error('error in getAllRentals:', err);
-    return res.status(500).json({ message: 'Server error', error: err.message, success: false });
+    return res
+      .status(500)
+      .json({ message: 'Server error', error: err.message, success: false });
   }
 };
 
@@ -97,19 +113,30 @@ export const cancelRental = async (req, res) => {
     const rental = await Rental.findByPk(id);
 
     if (!rental) {
-      return res.status(404).json({ message: 'Rental not found', success: false });
+      return res
+        .status(404)
+        .json({ message: 'Rental not found', success: false });
     }
 
     if (req.user?.id !== rental.userId) {
-      return res.status(403).json({ message: 'No rights to cancel the lease', success: false });
+      return res
+        .status(403)
+        .json({ message: 'No rights to cancel the lease', success: false });
     }
 
     if (rental.status !== 'booked') {
-      return res.status(400).json({ message: 'Only booked rentals can be cancelled.', success: false });
+      return res
+        .status(400)
+        .json({
+          message: 'Only booked rentals can be cancelled.',
+          success: false,
+        });
     }
 
     if (new Date(rental.startDate) <= new Date()) {
-      return res.status(400).json({ message: 'You cannot cancel a past rental', success: false });
+      return res
+        .status(400)
+        .json({ message: 'You cannot cancel a past rental', success: false });
     }
 
     rental.status = 'cancelled';
@@ -123,6 +150,8 @@ export const cancelRental = async (req, res) => {
     });
   } catch (err) {
     console.error('error in cancelRental:', err);
-    return res.status(500).json({ message: 'Server error', error: err.message, success: false });
+    return res
+      .status(500)
+      .json({ message: 'Server error', error: err.message, success: false });
   }
 };

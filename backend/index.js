@@ -12,6 +12,8 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use("/api/user", userRoutes);
+app.use("/api/rental", rentalRoutes); 
 app.use("/api/bike", bikeRoutes )
 app.use("/api/category", categoryRoutes)
 app.use("/api/material", materialRoutes)

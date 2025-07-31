@@ -1,13 +1,13 @@
 import Rental from '../models/rental.js';
 import { Op } from 'sequelize';
 
-//  Создает новую аренду велосипеда
+
 
 export const createRental = async (req, res) => {
   try {
     const { userId, bikeId, startDate, endDate } = req.body;
 
-    // Валидация полей
+    
     if (!userId || !bikeId || !startDate || !endDate) {
       return res
         .status(400)
@@ -23,7 +23,7 @@ export const createRental = async (req, res) => {
         });
     }
 
-    // Проверка существования пользователя и велосипеда
+   
     const [user, bike] = await Promise.all([
       user.findByPk(userId),
       bike.findByPk(bikeId),
@@ -34,7 +34,7 @@ export const createRental = async (req, res) => {
         .json({ message: 'User or bike not found', success: false });
     }
 
-    // Проверка занятости велосипеда
+   
     const isBikeBusy = await Rental.findOne({
       where: {
         bikeId,
@@ -54,7 +54,7 @@ export const createRental = async (req, res) => {
         });
     }
 
-    // Создание аренды
+  
     const newRental = await Rental.create({
       userId,
       bikeId,
@@ -63,7 +63,7 @@ export const createRental = async (req, res) => {
       status: 'booked',
     });
 
-    // Ограничение полей в ответе
+   
     const { id, startDate: sd, endDate: ed, status } = newRental;
     return res.status(201).json({
       message: 'Lease created successfully',
@@ -78,7 +78,7 @@ export const createRental = async (req, res) => {
   }
 };
 
-//  Получает все аренды с пагинацией
+
 
 export const getAllRentals = async (req, res) => {
   try {
@@ -104,9 +104,7 @@ export const getAllRentals = async (req, res) => {
   }
 };
 
-/**
- * Отменяет аренду
- */
+
 export const cancelRental = async (req, res) => {
   try {
     const { id } = req.params;

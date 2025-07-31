@@ -2,7 +2,7 @@ import Bike from "../models/bike.js";
 
 export const addBikeController = async (req, res) => {
   try {
-    const {
+    const {  
       name,
       price,
       size,

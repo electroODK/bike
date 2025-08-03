@@ -1,0 +1,350 @@
+:root {
+    --primary-blue: #297FFF;
+    --primary-blue-dark: #1D4ED8;
+    --text-dark: #1E293B;
+    --text-light: #64748B;
+    --background-light: #F8F9FA;
+    --white: #FFFFFF;
+    --border-color: #E2E8F0;
+    --footer-bg: #272934;
+}
+
+html, body { 
+    margin: 0; 
+    padding: 0; 
+}
+
+.pageContainer { 
+    display: flex; 
+    flex-direction: column; 
+    min-height: 100vh; 
+    background-color: var(--white); 
+    font-family: 'Inter', sans-serif; 
+}
+
+a { 
+    text-decoration: none; 
+    color: inherit; 
+}
+
+
+.mainHeader { 
+    padding: 40px 404px; 
+    max-width: 1440px; 
+    margin: 0 auto; 
+    width: 100%; 
+    box-sizing: border-box; 
+}
+.navbar { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+}
+.navLeft { 
+    display: flex; 
+    align-items: center; 
+    gap: 70px; 
+    margin-left: 50px; 
+}
+.logo img { 
+    height: 48px; 
+    width: auto; 
+    margin-left:30px; 
+}
+.navLinks { 
+    display: flex; 
+    gap: 32px; 
+}
+.navLinks a { 
+    font-size: 16px; 
+    font-weight: 500; 
+    color: var(--text-light); 
+    transition: color 0.2s ease-in-out; 
+    white-space: nowrap; 
+}
+.navLinks a:hover { 
+    color: var(--primary-blue); 
+}
+.navRight { 
+    display: flex; 
+    align-items: center; 
+    margin-right: 250px; 
+    gap: 24px;
+}
+.phoneNumber { 
+    font-size: 18px; 
+    font-weight: 600; 
+    color: var(--primary-blue); 
+    white-space: nowrap;
+}
+/* ... (остальные стили хедера остаются без изменений) ... */
+.profileContainer { position: relative; }
+.profileIcon { background: none; border: none; outline: none; cursor: pointer; padding: 0; line-height: 0; }
+.profileIcon img { width: 40px; height: 40px; }
+.avatarDropdown { position: absolute; top: calc(100% + 12px); right: 0; background-color: var(--white); border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); width: 200px; padding: 8px; z-index: 101; display: flex; flex-direction: column; animation: fadeIn 0.2s ease; }
+.avatarDropdown a, .avatarDropdown button { padding: 12px 16px; text-align: left; background: none; border: none; font-size: 16px; font-weight: 500; cursor: pointer; border-radius: 8px; width: 100%; color: var(--text-dark); }
+.avatarDropdown a:hover, .avatarDropdown button:hover { background-color: var(--background-light); }
+.timeContainer { position: relative; user-select: none; }
+.timeDisplay { text-align: right; }
+.currentTime { font-size: 20px; font-weight: 600; color: var(--text-dark); display: block; }
+.currentCity { font-size: 12px; color: var(--text-light); display: block; }
+.langSwitcher { font-weight: 600; cursor: pointer; position: relative; }
+.dropdownMenu { position: absolute; top: calc(100% + 10px); right: 0; background-color: var(--white); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); width: 180px; z-index: 100; padding: 8px; display: flex; flex-direction: column; gap: 4px; }
+.dropdownMenu a, .dropdownMenu div { padding: 10px; border-radius: 6px; }
+.dropdownMenu a:hover, .dropdownMenu div:hover { background-color: var(--background-light); }
+.tabletBurger, .mobileBurger { display: none; background: none; border: none; cursor: pointer; padding: 0; }
+.closeButton { background: none; border: none; cursor: pointer; padding: 0; line-height: 0; }
+
+/* ================== 404 CONTENT (DESKTOP) ================== */
+.mainContent {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 100px; 
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    text-align: center;
+    max-width: 1440px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box; /* Добавлено для корректной работы padding */
+    margin-bottom: 120px;
+}
+
+.errorCode {
+    max-width: 550px; /* Ограничиваем максимальную ширину картинки */
+    width: 100%;      /* Заставляем ее быть адаптивной (уменьшаться на маленьких экранах) */
+    height: auto;     /* Высота подстроится сама, сохраняя пропорции картинки */
+    margin-bottom: 0;
+}
+
+.errorMessage {
+    font-size: 20px;
+    color: var(--text-light);
+    margin-top: 70px; 
+    margin-bottom: 40px; 
+}
+
+.btn { 
+    display: inline-block; 
+    padding: 16px 32px; 
+    font-size: 16px; 
+    font-weight: 600; 
+    border-radius: 12px; 
+    border: none; 
+    cursor: pointer; 
+    transition: background-color 0.2s ease-in-out; 
+}
+.btnPrimary { 
+    background-color: var(--primary-blue); 
+    color: var(--white); 
+}
+.btnPrimary:hover { 
+    background-color: var(--primary-blue-dark); 
+}
+
+/* ================== FOOTER ================== */
+.footer { 
+    background-color: var(--footer-bg); 
+    color: #E2E8F0; 
+    padding: 60px 40px; 
+    font-family: 'Inter', sans-serif; 
+    margin-top: auto; 
+    width: 100%; 
+    box-sizing: border-box; 
+}
+.footerContainer { 
+    max-width: 1440px; 
+    margin: 0 auto; 
+}
+.footerTop { 
+    display: flex; 
+    justify-content: space-between; 
+    margin-bottom: 40px; 
+    padding-bottom: 40px; 
+}
+.linkGroup { 
+    display: flex; 
+    gap: 80px; 
+}
+.linkColumn { 
+    display: flex; 
+    flex-direction: column; 
+}
+.linkColumn h4 { 
+    font-family: 'Montserrat', sans-serif; 
+    font-size: 18px; 
+    font-weight: 600; 
+    color: var(--white); 
+    margin-top: 0; 
+    margin-bottom: 24px; 
+    white-space: nowrap; 
+}
+.linkColumn a { 
+    font-family: 'Montserrat', sans-serif; 
+    font-size: 18px; 
+    font-weight: 600; 
+    color: #A0AEC0; 
+    text-decoration: none; 
+    margin-bottom: 20px; 
+    transition: color 0.2s ease-in-out; 
+}
+.linkColumn a:hover { 
+    color: var(--white); 
+}
+.footerBottom { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding-top: 30px; 
+    border-top: 1px solid rgba(255, 255, 255, 0.1); 
+}
+.copyrightSection { 
+    display: flex; 
+    align-items: center; 
+    gap: 40px; 
+    font-size: 14px; 
+    color: #A0AEC0; 
+}
+.copyrightSection a { 
+    color: #A0AEC0; 
+}
+.copyrightSection a:hover { 
+    color: #FFFFFF; 
+}
+.socialIcons { 
+    display: flex; 
+    gap: 16px; 
+}
+.socialIcons a { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    background-color: transparent; 
+}
+
+/* ================== RESPONSIVE STYLES ================== */
+
+/* Medium devices (tablets, less than 1200px) */
+@media (max-width: 1200px) {
+    .mainHeader {
+        padding: 30px 40px; /* Уменьшаем боковые отступы хедера */
+    }
+    .navLinks a:not(:nth-child(2)):not(:nth-child(3)) { display: none; }
+    .navLinks a:nth-child(1), .navLinks a:nth-child(4), .navLinks a:nth-child(5) { display: none; }
+    .phoneNumber, .langSwitcher { display: none; }
+    .navLeft { gap: 40px; margin-left: 0; }
+    .navRight { margin-right: 0; } /* Убираем большой отступ справа */
+    .tabletBurger { display: block; }
+
+    /* --- НОВЫЕ СТИЛИ: Адаптация контента 404 для планшета --- */
+    .mainContent {
+        padding-top: 80px;
+        margin-bottom: 100px;
+    }
+    .errorCode {
+        height: 200px; /* Немного уменьшаем картинку */
+    }
+    .errorMessage {
+        margin-top: 50px; /* Уменьшаем отступ сверху */
+    }
+    /* --- КОНЕЦ НОВЫХ СТИЛЕЙ --- */
+}
+
+/* Small devices (phones, less than 600px) */
+@media (max-width: 600px) {
+    .mainHeader { 
+        padding: 16px 20px; 
+    }
+    .navLeft, .navRight { 
+        display: none; 
+    }
+    .navbar { 
+        position: relative; 
+        height: 48px; 
+    }
+    .navbar .logo { 
+        display: block; 
+        position: absolute; 
+        left: 0; 
+        top: 50%; 
+        transform: translateY(-50%); 
+        margin: 0;
+    }
+    .mobileBurger { 
+        display: block; 
+        position: absolute; 
+        right: 0; 
+        top: 50%; 
+        transform: translateY(-50%); 
+    }
+    .tabletBurger { 
+        display: none; 
+    }
+    
+    /* --- НОВЫЕ СТИЛИ: Адаптация контента 404 для мобильных --- */
+    .mainContent {
+        padding-top: 60px; /* Значительно уменьшаем отступы */
+        margin-bottom: 80px;
+    }
+    .errorCode {
+        height: 160px; /* Делаем картинку меньше */
+    }
+    .errorMessage {
+        font-size: 18px; /* Уменьшаем шрифт сообщения */
+        margin-top: 40px; /* Уменьшаем отступ */
+        margin-bottom: 32px;
+        max-width: 300px; /* Ограничиваем ширину, чтобы текст красиво переносился */
+    }
+    .btn {
+        padding: 14px 28px; /* Немного уменьшаем кнопку */
+        font-size: 15px;
+    }
+    /* --- КОНЕЦ НОВЫХ СТИЛЕЙ --- */
+
+    .footer {
+        padding: 40px 20px; 
+    }
+    .footerTop, .footerBottom, .linkGroup { 
+        flex-direction: column; 
+        gap: 30px; 
+        align-items: center; 
+        text-align: center;
+    }
+    .footerBottom { 
+        align-items: center; 
+    }
+    .copyrightSection {
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+
+
+/* ================== MENU OVERLAYS & ANIMATIONS ================== */
+.menuOverlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; display: flex; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.tabletMenuOverlay { justify-content: center; align-items: flex-start; padding: 20px; }
+.tabletMenu { background: var(--white); border-radius: 16px; padding: 24px; width: 100%; max-width: 800px; animation: slideDown 0.3s ease-out; }
+.tabletMenuHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.tabletMenuHeader .logo img { height: 40px; margin: 0; }
+.tabletMenuRight { display: flex; align-items: center; gap: 24px; }
+.tabletMenuLinks { display: flex; justify-content: space-around; padding: 20px 0; }
+.tabletMenuLinks a { font-size: 18px; font-weight: 600; }
+
+.mobileMenuOverlay { justify-content: flex-end; }
+.mobileMenu { width: 85%; max-width: 400px; height: 100%; background-color: var(--white); padding: 24px; box-sizing: border-box; box-shadow: -10px 0px 30px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; animation: slideIn 0.3s ease-out; }
+.mobileMenuHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+.mobileMenuHeader .logo img { height: 40px; }
+.mobileMenuLinks { display: flex; flex-direction: column; gap: 24px; }
+.mobileMenuLinks a { font-size: 24px; font-weight: 600; color: var(--text-dark); }
+.mobileMenuFooter { margin-top: auto; display: flex; flex-direction: column; gap: 16px; }
+.btnCabinet { width: 100%; padding: 16px; background-color: var(--background-light); border-radius: 12px; font-size: 16px; font-weight: 600; text-align: center; border: 1px solid var(--border-color); }
+.btnLogout { width: 100%; padding: 16px; background: none; border: none; font-size: 16px; font-weight: 600; cursor: pointer; color: var(--text-light); }
+.langSwitcherMobile { text-align: center; font-weight: 600; padding: 10px; }
+
+@keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes slideDown { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }

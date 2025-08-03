@@ -1,0 +1,159 @@
+/* ================================== */
+/*        ОСНОВНОЙ БЛОК ФУТЕРА        */
+/* ================================== */
+.footer {
+    background-color: #1E293B;
+    color: #cbd5e1; /* Слегка приглушенный белый для текста */
+    padding: 60px 40px; /* Вертикальный и горизонтальный отступы */
+    font-size: 14px;
+}
+
+.footerContainer {
+    max-width: 1200px; /* Ограничиваем ширину для больших экранов */
+    margin: 0 auto;   /* Центрируем контейнер */
+}
+
+/* ================================== */
+/*         ВЕРХНЯЯ ЧАСТЬ ФУТЕРА        */
+/* ================================== */
+.footerTop {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap; /* Позволяет переносить блоки на новую строку */
+    gap: 40px; /* Расстояние между блоками ссылок */
+    padding-bottom: 40px;
+    margin-bottom: 40px;
+    border-bottom: 1px solid #334155;
+}
+
+.linkColumn {
+    /* Добавляем это свойство, чтобы дочерние элементы .linkGroup тоже были колонками */
+    display: flex;
+    flex-direction: column;
+}
+
+.linkColumn h4 {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.linkColumn a, .linkGroup a {
+    /* display: block; - это уже есть в .linkColumn */
+    color: #cbd5e1;
+    text-decoration: none;
+    margin-bottom: 12px;
+    transition: color 0.2s ease;
+}
+
+.linkColumn a:hover, .linkGroup a:hover {
+    color: #ffffff; /* Делаем ссылку белой при наведении */
+}
+
+.linkGroup {
+    display: flex;
+    gap: 60px; /* Расстояние между колонками */
+    flex-wrap: wrap;
+}
+
+
+/* ================================== */
+/*         НИЖНЯЯ ЧАСТЬ ФУТЕРА         */
+/* ================================== */
+.footerBottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Позволяет переносить блоки */
+    gap: 20px; /* Отступ для случая, когда блоки переносятся */
+}
+
+.copyrightSection {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #94a3b8;
+}
+
+.copyrightSection a {
+    color: #94a3b8;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.copyrightSection a:hover {
+    color: #ffffff;
+}
+
+.socialIcons {
+    display: flex;
+    gap: 16px;
+}
+
+.socialIcons a {
+    color: #94a3b8;
+    transition: color 0.2s ease;
+}
+
+.socialIcons a:hover {
+    color: #ffffff;
+}
+
+.socialIcons svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* ======================================================= */
+/*        АДАПТИВНОСТЬ (МОБИЛЬНЫЕ) - КЛЮЧЕВЫЕ ИЗМЕНЕНИЯ    */
+/* ======================================================= */
+@media (max-width: 768px) {
+    .footer {
+        padding: 40px 20px; /* Уменьшаем отступы на мобильных */
+    }
+
+    /* 1. Центрируем все основные блоки в футере */
+    .footerTop, .footerBottom {
+        flex-direction: column; /* Ставим колонки друг под другом */
+        align-items: center;    /* Центрируем их по горизонтали */
+        text-align: center;     /* Центрируем весь текст внутри */
+    }
+    
+   /* --- ВОТ РЕШЕНИЕ: ДОБАВЛЕНО ТОЛЬКО ЭТО ПРАВИЛО --- */
+    .footerTop > .linkColumn:first-child {
+        align-self: flex-start; /* Выравниваем сам блок по левому краю */
+        text-align: left;     /* Выравниваем текст внутри него по левому краю */
+    }
+
+    /* 2. Настраиваем группу ссылок ("Правила", "Отзывы"...) */
+    .linkGroup {
+        /* Превращаем flex-контейнер в сетку 2x2 */
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Две колонки равной ширины */
+        gap: 16px 40px; /* Вертикальный и горизонтальный отступы между ссылками */
+        width: 100%; /* Занимаем всю доступную ширину для корректной сетки */
+        justify-items: center; /* Центрируем содержимое ячеек сетки */
+    }
+    
+    /* Убираем лишние стили для дочерних .linkColumn, так как теперь управляет grid */
+    .linkGroup .linkColumn {
+        margin-bottom: 0;
+    }
+
+    /* 3. Настраиваем нижний блок (копирайт и иконки) */
+    .footerBottom {
+        gap: 24px; /* Расстояние между копирайтом и соц. иконками */
+    }
+    
+    .copyrightSection {
+        flex-direction: column; /* Ставим копирайт и политику друг под другом */
+        gap: 12px; /* Расстояние между строкой копирайта и политикой */
+    }
+}
+/* В конец файла Footer.module.css */
+.socialIcons img {
+    width: 24px;
+    height: 24px;
+    display: block; /* Убирает лишний отступ под картинкой */
+}

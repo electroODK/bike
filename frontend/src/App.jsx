@@ -1,21 +1,41 @@
+// src/App.jsx
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import Home from './pages/Home';
-// import Rent from './pages/Rent';
-// import Orders from './pages/account/Orders';
-// import Profile from './pages/account/Profile';
+
 import AppAdmin from './adminsrc/App';
+import Header from './components/Header.jsx'; 
+import Footer from './components/Footer.jsx'; 
+import { AuthProvider } from './components/AuthContext'; 
+
+import Page404 from './pages/404/404.jsx'; 
+
 
 function App() {
   return (
     <Router>
-      <Routes>
-        {/* <Route path="/" element={<Home />} /> */}
-        {/* <Route path="/rent" element={<Rent />} /> */}
-        {/* <Route path="/account/orders" element={<Orders />} /> */}
-        {/* <Route path="/account/profile" element={<Profile />} /> */}
-        <Route path="*" element={<h1>404 — Страница не найдена</h1>} />
-        <Route path='/admin' element={<AppAdmin/>} />
-      </Routes>
+
+      <AuthProvider>
+
+
+        <Header />
+
+      
+        <div style={{ flex: '1 0 auto' }}>
+          <Routes>
+            
+            <Route path="/" element={<h1 style={{ textAlign: 'center', padding: '50px' }}>Главная страница</h1>} />
+            
+            {/* <Route path="/rent" element={<Rent />} /> */}
+            {/* <Route path="/account/orders" element={<Orders />} /> */}
+            {/* <Route path="/account/profile" element={<Profile />} /> */}
+            
+            <Route path='/admin' element={<AppAdmin/>} />
+            <Route path="*" element={<Page404 />} />
+          </Routes>
+        </div>
+        <Footer />
+
+      </AuthProvider>
     </Router>
   );
 }

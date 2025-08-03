@@ -4,15 +4,19 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: rgba(0, 0, 0, 0.87);
+  background-color: #fafafa;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 a {
   font-weight: 500;
   color: #646cff;
@@ -24,8 +28,8 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  /* display: flex;     <-- УДАЛЯЕМ ИЛИ КОММЕНТИРУЕМ */
+  /* place-items: center; <-- УДАЛЯЕМ ИЛИ КОММЕНТИРУЕМ */
   min-width: 320px;
   min-height: 100vh;
 }

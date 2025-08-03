@@ -43,9 +43,10 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 // Старт
-sequelize.sync({ alter: true })
+sequelize.sync({ force: true })
 .then(() => {
   console.log('✅ БД подключена и синхронизирована');
+  console.log('📡 DB URL:', process.env.DATABASE_URL);
   app.listen(PORT, () => {
     console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
   });
@@ -53,6 +54,3 @@ sequelize.sync({ alter: true })
 .catch((err) => {
   console.error('❌ Ошибка при подключении к БД:', err);
 });
-
-
-

@@ -1,128 +1,152 @@
-import Rental from '../models/rental.js';
 import { Op } from 'sequelize';
+import Rental from '../models/rental.js';
+import RentalBike from '../models/rentalBike.js';
+import User from '../models/user.js';
+import Bike from '../models/bike.js';
+import Station from '../models/station.js';
 
-
-//  Создает новую аренду велосипеда
- 
-export const createRental = async (req, res) => {
+// ✅ 1. Создание аренды
+export const createRentalController = async (req, res) => {
   try {
-    const { userId, bikeId, startDate, endDate } = req.body;
+    const {
+      user_id,
+      start_station_id,
+      end_station_id,
+      start_date,
+      end_date,
+      bikes,
+    } = req.body;
 
-    // Валидация полей
-    if (!userId || !bikeId || !startDate || !endDate) {
-      return res.status(400).json({ message: 'All fields are required', success: false });
+    if (!user_id || !start_station_id || !end_station_id || !start_date || !end_date || !bikes?.length) {
+      return res.status(400).json({ message: 'Missing required fields', success: false });
     }
 
-    if (new Date(endDate) <= new Date(startDate)) {
-      return res.status(400).json({ message: 'The end date must be later than the start date.', success: false });
-    }
-
-    // Проверка существования пользователя и велосипеда
-    const [user, bike] = await Promise.all([
-      user.findByPk(userId),
-      bike.findByPk(bikeId),
-    ]);
-    if (!user || !bike) {
-      return res.status(404).json({ message: 'User or bike not found', success: false });
-    }
-
-    // Проверка занятости велосипеда
-    const isBikeBusy = await Rental.findOne({
-      where: {
-        bikeId,
-        [Op.and]: [
-          { startDate: { [Op.lt]: endDate } },
-          { endDate: { [Op.gt]: startDate } },
-        ],
-      },
-    });
-
-    if (isBikeBusy) {
-      return res.status(409).json({ message: 'The bike is booked for the selected dates', success: false });
-    }
-
-    // Создание аренды
     const newRental = await Rental.create({
-      userId,
-      bikeId,
-      startDate,
-      endDate,
+      user_id,
+      start_station_id,
+      end_station_id,
+      start_date,
+      end_date,
       status: 'booked',
     });
 
-    // Ограничение полей в ответе
-    const { id, startDate: sd, endDate: ed, status } = newRental;
+    for (const bike of bikes) {
+      await RentalBike.create({
+        rental_id: newRental.id,
+        bike_id: bike.bike_id,
+        is_helmet: bike.is_helmet || false,
+        is_torch: bike.is_torch || false,
+        is_lock: bike.is_lock || false,
+      });
+    }
+
     return res.status(201).json({
-      message: 'Lease created successfully',
-      rental: { id, userId, bikeId, startDate: sd, endDate: ed, status },
+      message: 'Rental created successfully',
+      rental_id: newRental.id,
       success: true,
     });
   } catch (err) {
-    console.error('error in createRental:', err);
-    return res.status(500).json({ message: 'Server error', error: err.message, success: false });
+    console.error('❌ Error in createRental:', err);
+    return res.status(500).json({ message: 'Server error', success: false });
   }
 };
 
-
-//  Получает все аренды с пагинацией
- 
-export const getAllRentals = async (req, res) => {
-  try {
-    const { page = 1, limit = 10 } = req.query;
-    const offset = (page - 1) * limit;
-
-    const rentals = await Rental.findAll({
-      include: [
-        { model: User, attributes: ['id', 'name'] },
-        { model: Bike, attributes: ['id', 'name', 'type'] },
-      ],
-      order: [['createdAt', 'DESC']],
-      limit: parseInt(limit, 10),
-      offset: parseInt(offset, 10),
-    });
-
-    return res.status(200).json({ rentals: rentals || [], success: true });
-  } catch (err) {
-    console.error('error in getAllRentals:', err);
-    return res.status(500).json({ message: 'Server error', error: err.message, success: false });
-  }
-};
-
-/**
- * Отменяет аренду
- */
-export const cancelRental = async (req, res) => {
+// ✅ 2. Получение аренды по ID
+export const getRentalByIdController = async (req, res) => {
   try {
     const { id } = req.params;
-    const rental = await Rental.findByPk(id);
+
+    const rental = await Rental.findByPk(id, {
+      include: [
+        { model: User, as: 'user', attributes: ['id', 'name', 'phone_number'] },
+        { model: Station, as: 'start_station' },
+        { model: Station, as: 'end_station' },
+        {
+          model: Bike,
+          as: 'bikes',
+          through: { model: RentalBike, attributes: ['is_helmet', 'is_torch', 'is_lock'] },
+        },
+      ],
+    });
 
     if (!rental) {
       return res.status(404).json({ message: 'Rental not found', success: false });
     }
 
-    if (req.user?.id !== rental.userId) {
-      return res.status(403).json({ message: 'No rights to cancel the lease', success: false });
+    return res.status(200).json({ rental, success: true });
+  } catch (err) {
+    console.error('❌ Error in getRentalById:', err);
+    return res.status(500).json({ message: 'Server error', success: false });
+  }
+};
+
+// ✅ 3. Получение всех аренд пользователя
+export const getUserRentalsController = async (req, res) => {
+  try {
+    const { user_id } = req.params;
+
+    const rentals = await Rental.findAll({
+      where: { user_id },
+      include: [
+        { model: Station, as: 'start_station' },
+        { model: Station, as: 'end_station' },
+        {
+          model: Bike,
+          as: 'bikes',
+          through: { model: RentalBike, attributes: ['is_helmet', 'is_torch', 'is_lock'] },
+        },
+      ],
+      order: [['createdAt', 'DESC']],
+    });
+
+    return res.status(200).json({ rentals, success: true });
+  } catch (err) {
+    console.error('❌ Error in getUserRentals:', err);
+    return res.status(500).json({ message: 'Server error', success: false });
+  }
+};
+
+// ✅ 4. Обновление статуса аренды
+export const updateRentalStatusController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const rental = await Rental.findByPk(id);
+    if (!rental) {
+      return res.status(404).json({ message: 'Rental not found', success: false });
+    }
+
+    rental.status = status;
+    await rental.save();
+
+    return res.status(200).json({ message: 'Status updated', success: true });
+  } catch (err) {
+    console.error('❌ Error in updateRentalStatus:', err);
+    return res.status(500).json({ message: 'Server error', success: false });
+  }
+};
+
+// ✅ 5. Отмена аренды
+export const cancelRentalController = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const rental = await Rental.findByPk(id);
+    if (!rental) {
+      return res.status(404).json({ message: 'Rental not found', success: false });
     }
 
     if (rental.status !== 'booked') {
       return res.status(400).json({ message: 'Only booked rentals can be cancelled.', success: false });
     }
 
-    if (new Date(rental.startDate) <= new Date()) {
-      return res.status(400).json({ message: 'You cannot cancel a past rental', success: false });
-    }
-
     rental.status = 'cancelled';
     await rental.save();
 
-    const { userId, bikeId, startDate, endDate, status } = rental;
-    return res.status(200).json({
-      message: 'Rental successfully canceled',
-      rental: { id: rental.id, userId, bikeId, startDate, endDate, status },
-      success: true,
-    });
+    return res.status(200).json({ message: 'Rental cancelled', success: true });
   } catch (err) {
-    console.error('error in cancelRental:', err);
-    return res.status(500).json({ message: 'Server error', error: err.message, success: false });
+    console.error('❌ Error in cancelRental:', err);
+    return res.status(500).json({ message: 'Server error', success: false });
   }
 };

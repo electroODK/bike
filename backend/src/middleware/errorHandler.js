@@ -1,6 +1,6 @@
 // src/middleware/errorHandler.js
 import logger from '../utils/logger.js';
-import fetch from 'node-fetch';
+// import fetch from 'node-fetch';
 import dotenv from 'dotenv';
 
 dotenv.config();

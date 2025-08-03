@@ -42,10 +42,11 @@ app.use((req, res) => {
 
 app.use(errorHandler);
 
-
-sequelize.sync({ alter: true })
+// Старт
+sequelize.sync({ force: true })
 .then(() => {
   console.log('✅ БД подключена и синхронизирована');
+  console.log('📡 DB URL:', process.env.DATABASE_URL);
   app.listen(PORT, () => {
     console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
   });

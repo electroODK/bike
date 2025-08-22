@@ -8,7 +8,7 @@ const User = sequelize.define('User', {
   name: { type: DataTypes.STRING, allowNull: false },
   password: { type: DataTypes.STRING, allowNull: false },
   phone_number: { type: DataTypes.STRING, allowNull: false, unique: true },
-  telegram: { type: DataTypes.STRING, allowNull: false, unique: true },
+  email: { type: DataTypes.STRING, allowNull: false, unique: true },
   access_token: { type: DataTypes.TEXT },
   refresh_token: { type: DataTypes.TEXT },
   status: { type: DataTypes.ENUM('active', 'inactive'), defaultValue: 'active' },

@@ -17,7 +17,7 @@ const userRoutes = Router();
 userRoutes.post("/register", registerUserController)
 userRoutes.post("/verify-email", verifyUserController)
 userRoutes.post("/login", loginUserController)
-userRoutes.get ("/logout", authMiddleware, logoutUserController)
+userRoutes.post ("/logout", authMiddleware, logoutUserController)
 userRoutes.put ("/forgot-password", forgotPasswordController)
 userRoutes.put ("/verify-forgot-password-otp", verifyForgotPasswordOTPController)
 userRoutes.put("/reset-password", resetPasswordController)

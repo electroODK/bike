@@ -7,7 +7,7 @@ const Bike = sequelize.define(
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     name: { type: DataTypes.STRING(100), allowNull: false },
     price: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
-    size: { type: DataTypes.ENUM('XS', 'S', 'M', 'L', 'XL'), allowNull: false },
+    size: { type: DataTypes.STRING(50), allowNull: false },
     category_id: { type: DataTypes.INTEGER, allowNull: false },
     material_id: { type: DataTypes.INTEGER, allowNull: false },
     information: { type: DataTypes.TEXT },

@@ -1,19 +1,24 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
-import  User  from "../models/user.js"
+import User from '../models/user.js';
+import { comparePassword, hashPassword } from '../utils/hashPassword.js';
+import { Op } from 'sequelize';
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from '../utils/tokenService.js';
 
 dotenv.config();
 
 // register controller
 export const registerUserController = async (req, res) => {
   try {
-    const { name, email, password, mobile } = req.body;
+    const { name, email, password, phone_number } = req.body;
 
-    console.log(name, email, password, mobile);
+    console.log(name, email, password, phone_number);
 
-    
-    if (!name || !email || !password || !mobile) {
+    if (!name || !email || !password || !phone_number) {
       return res.status(400).json({
         message: 'Please fill the required fields',
         error: true,
@@ -21,60 +26,59 @@ export const registerUserController = async (req, res) => {
       });
     }
 
-    
-      const existingUser = await User.findOne({ where: {
-    [User.sequalize.Op.or]: [{ email }, { mobile }],
-  },
-});
+    const existingUser = await User.findOne({
+      where: {
+        [Op.or]: [{ email }, { phone_number }],
+      },
+    });
 
     if (existingUser) {
       return res.status(400).json({
         message:
           existingUser.email === email
             ? 'Email is already registered'
-            : 'Mobile number is already registered',
+            : 'Phone_number number is already registered',
         error: true,
         success: false,
       });
     }
 
-    
     const hashedPassword = await hashPassword(password);
 
-    
-    const newUser = new UserModel({
-      username: name,
+    const savedUser = await User.create({
+      name: name,
       email,
       password: hashedPassword,
-      mobile,
+      phone_number,
+      role: 'user',
     });
 
-    const savedUser = await newUser.save();
+    const verifyEmailURL = `${process.env.CLIENT_URL}/verify-email?code=${savedUser.id}`;
 
-    
-    const verifyEmailURL = `${process.env.CLIENT_URL}/verify-email?code=${savedUser._id}`;
+    // await sendEmail({
+    //   sendTo: email,
+    //   subject: 'Verification Email from Blinkit',
+    //   html: verificationEmailTemplate({
+    //     name: savedUser.username,
+    //     url: verifyEmailURL,
+    //   }),
+    // });
 
-   
-    await sendEmail({
-      sendTo: email,
-      subject: 'Verification Email from Blinkit',
-      html: verificationEmailTemplate({
-        name: savedUser.username, 
-        url: verifyEmailURL,
-      }),
+    const accessToken = generateAccessToken({
+      id: savedUser.id,
+      role: savedUser.role,
     });
-
-    
-    const accessToken = await generateAccessToken(savedUser._id);
-    const refreshToken = await generateRefreshToken(savedUser._id);
+    const refreshToken = generateRefreshToken({
+      id: savedUser.id,
+      role: savedUser.role,
+    });
 
     const cookiesOption = {
       httpOnly: true,
-      secure: false, 
+      secure: false,
       sameSite: 'None',
     };
 
-    
     res.cookie('accessToken', accessToken, cookiesOption);
     res.cookie('refreshToken', refreshToken, cookiesOption);
 
@@ -84,10 +88,10 @@ export const registerUserController = async (req, res) => {
       success: true,
       data: {
         user: {
-          id: savedUser._id,
+          id: savedUser.id,
           username: savedUser.username,
           email: savedUser.email,
-          mobile: savedUser.mobile,
+          phone_number: savedUser.phone_number,
         },
         accessToken,
         refreshToken,
@@ -108,11 +112,11 @@ export const verifyUserController = async (req, res) => {
   try {
     const { code } = req.body;
 
-   const user = await User.findOne({ where: { verificationCode: code } });
+    const user = await User.findOne({ where: { verificationCode: code } });
 
     if (!user) {
       return res.status(400).json({
-        message: "Invalid verification code",
+        message: 'Invalid verification code',
         error: true,
         success: false,
       });
@@ -120,7 +124,7 @@ export const verifyUserController = async (req, res) => {
 
     if (user.verify_email) {
       return res.status(400).json({
-        message: "User already verified",
+        message: 'User already verified',
         error: true,
         success: false,
       });
@@ -132,7 +136,7 @@ export const verifyUserController = async (req, res) => {
     await user.save();
 
     return res.status(200).json({
-      message: "Email verified successfully",
+      message: 'Email verified successfully',
       error: false,
       success: true,
     });
@@ -150,73 +154,70 @@ export const loginUserController = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    
     if (!email || !password) {
       return res.status(400).json({
-        message: "Email and password are required",
+        message: 'Email and password are required',
         error: true,
         success: false,
       });
     }
 
-    
-    const user = await User.findOne({ where: { email }, });
+    const user = await User.findOne({ where: { email } });
+
 
     if (!user) {
-      return res.status(401).json({ 
-        message: "Invalid credentials", 
+      return res.status(401).json({
+        message: 'Invalid credentials',
         error: true,
         success: false,
       });
     }
 
-    
-    if (user.status !== "Active") {
-      return res.status(403).json({ 
-        message: "Your account is ${user.status}. Please contact support.",
+    if (user.status !== 'active') {
+      return res.status(403).json({
+        message: `Your account is ${user.status}. Please contact support.`,
         error: true,
         success: false,
       });
     }
 
-   
-    const isPasswordMatch = await comparePasswords(password, user.password);
-    
+    const isPasswordMatch = await comparePassword(password, user.password);
+    // if (isPasswordMatch) {
+    //   return console.log('Пароль совпадает');
+    // } else {
+    //   return console.log('Пароль не совпадает');
+    // }
+
     if (!isPasswordMatch) {
-      
       await new Promise((resolve) => setTimeout(resolve, 500));
       return res.status(401).json({
-        message: "Invalid credentials",
+        message: 'Invalid credentials',
         error: true,
         success: false,
       });
     }
 
-    
-    const accessToken = await generateAccessToken(user._id);
-    const refreshToken = await generateRefreshToken(user._id);
+    const accessToken = await generateAccessToken({ id: user.id });
+    const refreshToken = await generateRefreshToken({ id: user.id });
 
-    
-    await UserModel.findByIdAndUpdate(
-      user._id,
-      { last_login_date: new Date() },
-      { new: true }
-    );
+    await user.update({
+      last_login_date: new Date(),
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    });
 
-    
     const cookiesOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", 
-      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000, 
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     };
 
-    res.cookie("accessToken", accessToken, cookiesOptions);
-    res.cookie("refreshToken", refreshToken, cookiesOptions);
+    res.cookie('accessToken', accessToken, cookiesOptions);
+    res.cookie('refreshToken', refreshToken, cookiesOptions);
 
-    
     const userResponse = {
-      _id: user._id,
+      id: user.id,
       email: user.email,
       username: user.username,
       status: user.status,
@@ -224,19 +225,20 @@ export const loginUserController = async (req, res) => {
     };
 
     return res.status(200).json({
-      message: "Login successful",
+      message: 'Login successful',
       error: false,
       success: true,
       data: {
         accessToken,
         refreshToken,
-        user: userResponse, 
+        user: userResponse,
+         role: user.role
       },
     });
   } catch (error) {
-    console.error("Login error:", error);
+    console.error('Login error:', error);
     return res.status(500).json({
-      message: "Internal server error",
+      message: 'Internal server error',
       error: true,
       success: false,
     });
@@ -251,26 +253,26 @@ export const logoutUserController = async (req, res) => {
     const cookiesOptions = {
       httpOnly: true,
       secure: true,
-      sameSite: "None",
+      sameSite: 'None',
     };
 
-    res.clearCookie("accessToken", cookiesOptions);
-    res.clearCookie("refreshToken", cookiesOptions);
+    res.clearCookie('accessToken', cookiesOptions);
+    res.clearCookie('refreshToken', cookiesOptions);
 
     const user = await User.findByPk(userId);
 
     if (!user) {
       return res.status(404).json({
-        message: "User not found",
+        message: 'User not found',
         error: true,
         success: false,
       });
     }
 
-    await user.update({ refresh_token: ''})
+    await user.update({ refresh_token: '' });
 
     return res.status(200).json({
-      message: "Logged out successfully",
+      message: 'Logged out successfully',
       error: false,
       success: true,
     });
@@ -290,7 +292,7 @@ export const forgotPasswordController = async (req, res) => {
 
     if (!email) {
       return res.status(400).json({
-        message: "Please provide email",
+        message: 'Please provide email',
         error: true,
         success: false,
       });
@@ -300,13 +302,13 @@ export const forgotPasswordController = async (req, res) => {
 
     if (!user) {
       return res.status(400).json({
-        message: "Email does not exist",
+        message: 'Email does not exist',
         error: true,
         success: false,
       });
     }
 
-    const otp = generateOTP(); 
+    const otp = generateOTP();
     const otpExpireTime = new Date(Date.now() + 10 * 60 * 1000);
 
     await user.update({
@@ -316,7 +318,7 @@ export const forgotPasswordController = async (req, res) => {
 
     await sendEmail({
       sendTo: email,
-      subject: "Forgot Password from Blinkin Shop",
+      subject: 'Forgot Password from Blinkin Shop',
       html: forgotPasswordEmailTemplate({
         name: user.name,
         otp,
@@ -324,13 +326,13 @@ export const forgotPasswordController = async (req, res) => {
     });
 
     return res.status(200).json({
-      message: "Check your email",
+      message: 'Check your email',
       error: false,
-      success: true, 
+      success: true,
     });
   } catch (error) {
     return res.status(500).json({
-      message: error.message || "Server error",
+      message: error.message || 'Server error',
       error: true,
       success: false,
     });
@@ -344,7 +346,7 @@ export const verifyForgotPasswordOTPController = async (req, res) => {
 
     if (!email || !otp) {
       return res.status(400).json({
-        message: "Please provide both Email and OTP",
+        message: 'Please provide both Email and OTP',
         error: true,
         success: false,
       });
@@ -354,7 +356,7 @@ export const verifyForgotPasswordOTPController = async (req, res) => {
 
     if (!user) {
       return res.status(400).json({
-        message: "Email does not exist!",
+        message: 'Email does not exist!',
         error: true,
         success: false,
       });
@@ -364,7 +366,7 @@ export const verifyForgotPasswordOTPController = async (req, res) => {
 
     if (user.forgot_password_expiry < currentTime) {
       return res.status(400).json({
-        message: "The OTP has expired. Please request a new one to proceed",
+        message: 'The OTP has expired. Please request a new one to proceed',
         error: true,
         success: false,
       });
@@ -372,22 +374,19 @@ export const verifyForgotPasswordOTPController = async (req, res) => {
 
     if (otp !== user.forgot_password_otp) {
       return res.status(400).json({
-        message: "The OTP entered is incorrect. Please check and try again",
+        message: 'The OTP entered is incorrect. Please check and try again',
         error: true,
         success: false,
       });
     }
 
-   
     await user.update({
-      $set: {
-        forgot_password_otp: null,
-        forgot_password_expiry: null,
-      },
+      forgot_password_otp: null,
+      forgot_password_expiry: null,
     });
 
     return res.status(200).json({
-      message: "OTP verified successfully",
+      message: 'OTP verified successfully',
       error: false,
       success: true,
     });
@@ -405,9 +404,9 @@ export const resetPasswordController = async (req, res) => {
   try {
     const { email, newPassword, confirmPassword } = req.body;
 
-    if (!email,  !newPassword, !confirmPassword) {
+    if ((!email, !newPassword, !confirmPassword)) {
       return res.status(400).json({
-        message: "Please provide email and both password fields.",
+        message: 'Please provide email and both password fields.',
         error: true,
         success: false,
       });
@@ -415,17 +414,18 @@ export const resetPasswordController = async (req, res) => {
 
     if (newPassword !== confirmPassword) {
       return res.status(400).json({
-        message: "Passwords do not match! Please ensure both fields are identical.",
+        message:
+          'Passwords do not match! Please ensure both fields are identical.',
         error: true,
         success: false,
       });
     }
 
-   const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ where: { email } });
 
     if (!user) {
       return res.status(400).json({
-        message: "Email does not exist",
+        message: 'Email does not exist',
         error: true,
         success: false,
       });
@@ -441,16 +441,16 @@ export const resetPasswordController = async (req, res) => {
 
     await sendEmail({
       sendTo: email,
-      subject: "Your Password Has Been Successfully Reset",
+      subject: 'Your Password Has Been Successfully Reset',
       html: resetPasswordConfirmationTemplate({
-        name: updatedUser.name,
-        email: updatedUser.email,
+        name: user.name,
+        email: user.email,
         supportEmail: '',
       }),
     });
 
     return res.status(200).json({
-      message: "Password updated successfully",
+      message: 'Password updated successfully',
       error: false,
       success: true,
     });
@@ -471,38 +471,36 @@ export const refreshTokenController = async (req, res) => {
 
     if (!refreshToken) {
       return res.status(400).json({
-        message: "Refresh token not found",
+        message: 'Refresh token not found',
         error: true,
         success: false,
       });
     }
 
-    
-    const decoded = jwt.verify(refreshToken, process.env.SECRET_KEY_REFRESH_TOKEN);
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
 
     const user = await User.findByPk(decoded.id);
 
     if (!user || user.refresh_token !== refreshToken) {
       return res.status(401).json({
-        message: "Invalid or expired refresh token",
+        message: 'Invalid or expired refresh token',
         error: true,
         success: false,
       });
     }
 
-    
-    const newAccessToken = await generateAccessToken(user._id);
+    const newAccessToken = await generateAccessToken(user.id);
 
     const cookieOptions = {
       httpOnly: true,
       secure: true,
-      sameSite: "None",
+      sameSite: 'None',
     };
 
-    res.cookie("accessToken", newAccessToken, cookieOptions);
+    res.cookie('accessToken', newAccessToken, cookieOptions);
 
     return res.status(200).json({
-      message: "New accessToken generated",
+      message: 'New accessToken generated',
       error: false,
       success: true,
       data: {

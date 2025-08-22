@@ -8,6 +8,7 @@ import Footer from './components/Footer.jsx';
 import { AuthProvider } from './components/AuthContext'; 
 
 import Page404 from './pages/404/404.jsx'; 
+import Rent from './pages/Rent/Rent.jsx';
 
 
 function App() {
@@ -25,7 +26,7 @@ function App() {
             
             <Route path="/" element={<h1 style={{ textAlign: 'center', padding: '50px' }}>Главная страница</h1>} />
             
-            {/* <Route path="/rent" element={<Rent />} /> */}
+            <Route path="/rent" element={<Rent />} />
             {/* <Route path="/account/orders" element={<Orders />} /> */}
             {/* <Route path="/account/profile" element={<Profile />} /> */}
             

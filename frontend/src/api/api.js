@@ -84,8 +84,14 @@ export const refreshToken = async () => {
 // 🚲 RENTAL
 // ======================
 export const createRental = async (rentalData) => {
-  const { data } = await api.post("/rental/create-rental", rentalData);
-  return data;
+  try {
+    const { data } = await api.post("/rental/create-rental", rentalData);
+    return data;
+    
+  } catch (error) {
+    console.log(error);
+    
+  }
 };
 
 export const getRentalById = async (id) => {

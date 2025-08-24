@@ -1,22 +1,37 @@
 import React, { useState } from 'react';
 import { createRental } from '../../api/api.js';
 import { useNavigate } from 'react-router-dom';
-import styles from './Rent.module.scss'; // Предполагается, что стили находятся в этом файле
+import s from './Rent.module.scss';
+import { MyContext } from '../../../context.jsx';
+import bikes from '../../../bikesData.js';
 
 const Rent = () => {
-  const [bikeId, setBikeId] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [startStationId, setStartStationId] = useState('');
   const [endStationId, setEndStationId] = useState('');
-  const [options, setOptions] = useState({
-    is_helmet: false,
-    is_torch: false,
-    is_lock: false,
-  });
+
+  // Список велосипедов (можно брать с API)
+  const [bikes, setBikes] = useState([
+    { id: 1, title: 'Горный велосипед', image: '/bike1.png' },
+    { id: 2, title: 'Шоссейный велосипед', image: '/bike2.png' }
+  ]);
+
+  // Опции аренды по каждому велосипеду
+  const [bikeOptions, setBikeOptions] = useState(
+    bikes.map(() => ({ helmet: false, light: false, lock: false }))
+  );
 
   const navigate = useNavigate();
 
+  // Обновление чекбоксов
+  const handleCheckBoxChange = (index, option) => {
+    const newOptions = [...bikeOptions];
+    newOptions[index][option] = !newOptions[index][option];
+    setBikeOptions(newOptions);
+  };
+
+  // Отправка формы
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -26,12 +41,12 @@ const Rent = () => {
       end_station_id: +endStationId,
       start_date: startDate,
       end_date: endDate,
-      bikes: [
-        {
-          bike_id: +bikeId,
-          ...options,
-        },
-      ],
+      bikes: bikes.map((bike, i) => ({
+        bike_id: bike.id,
+        is_helmet: bikeOptions[i].helmet,
+        is_torch: bikeOptions[i].light,
+        is_lock: bikeOptions[i].lock,
+      })),
     };
 
     try {
@@ -44,86 +59,57 @@ const Rent = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <h2 className={styles.title}>Оформление аренды</h2>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <input
-          type="text"
-          placeholder="ID велосипеда"
-          value={bikeId}
-          onChange={(e) => setBikeId(e.target.value)}
-          className={styles.input}
-          required
-        />
-        <input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          className={styles.input}
-          required
-        />
-        <input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          className={styles.input}
-          required
-        />
-        <input
-          type="text"
-          placeholder="ID станции старта"
-          value={startStationId}
-          onChange={(e) => setStartStationId(e.target.value)}
-          className={styles.input}
-          required
-        />
-        <input
-          type="text"
-          placeholder="ID станции конца"
-          value={endStationId}
-          onChange={(e) => setEndStationId(e.target.value)}
-          className={styles.input}
-          required
-        />
+    <form onSubmit={handleSubmit} className={s.section}>
+      <div className={s.container}>
+        <h1 className={s.title}>Заявка на аренду велосипедов</h1>
 
-        <div className={styles.checkboxGroup}>
-          <label>
-            <input
-              type="checkbox"
-              checked={options.is_helmet}
-              onChange={() =>
-                setOptions((prev) => ({ ...prev, is_helmet: !prev.is_helmet }))
-              }
-            />
-            Шлем
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={options.is_torch}
-              onChange={() =>
-                setOptions((prev) => ({ ...prev, is_torch: !prev.is_torch }))
-              }
-            />
-            Фонарик
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={options.is_lock}
-              onChange={() =>
-                setOptions((prev) => ({ ...prev, is_lock: !prev.is_lock }))
-              }
-            />
-            Замок
-          </label>
+        <div className={s.BikesList}>
+          {bikes.map((bike, i) => (
+            <div key={bike.id} className={s.bikeItem}>
+              <div className={s.titleBikes}>
+                <img src={bike.image} alt="bike" />
+                <h4 className={s.title}>{bike.title}</h4>
+              </div>
+
+              <div className={s.devices}>
+                <div className={s.titles}>
+                  <div>Шлем</div>
+                  <div>Фонарик</div>
+                  <div>Замок</div>
+                  <div>Стоимость</div>
+                </div>
+
+                <div className={s.bikeRow}>
+                  <input
+                    type="checkbox"
+                    checked={bikeOptions[i].helmet}
+                    onChange={() => handleCheckBoxChange(i, 'helmet')}
+                  />
+                  <input
+                    type="checkbox"
+                    checked={bikeOptions[i].light}
+                    onChange={() => handleCheckBoxChange(i, 'light')}
+                  />
+                  <input
+                    type="checkbox"
+                    checked={bikeOptions[i].lock}
+                    onChange={() => handleCheckBoxChange(i, 'lock')}
+                  />
+                  <div className={s.price}>
+                  <h4 className={s.title}>{bike.price}</h4>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
-        <button type="submit" className={styles.button}>
-          Забронировать
+        <button type="submit" className={s.submitButton}>
+          Отправить заявку
         </button>
-      </form>
-    </div>
+      </div>
+    </form>
   );
 };
 

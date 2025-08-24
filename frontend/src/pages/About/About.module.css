@@ -1,0 +1,171 @@
+/* src/pages/About/About.module.css */
+
+.aboutPageContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: #FFFFFF;
+}
+
+.sectionWrapper {
+  background-color: #F9F9FB;
+  border-radius: 24px;
+  padding: 40px;
+  margin-bottom: 40px;
+}
+
+.aboutSection {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.aboutTextContent {
+  flex: 1;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #1E293B;
+}
+
+.paragraph {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #475569;
+  margin-bottom: 16px;
+}
+
+.aboutImageContainer {
+  flex: 1;
+}
+
+.aboutImage {
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  object-fit: cover;
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.reviewsCarousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 24px;
+  padding-bottom: 20px;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  user-select: none;
+}
+.reviewsCarousel::-webkit-scrollbar {
+  display: none;
+}
+
+.activeDrag {
+  cursor: grabbing;
+}
+
+.reviewCard {
+  flex: 0 0 calc((100% - 48px) / 3); 
+  background-color: #FFFFFF;
+  border-radius: 16px;
+  padding: 24px;
+  box-sizing: border-box;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.reviewCard img {
+  pointer-events: none;
+}
+
+.reviewText {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #334155;
+  flex-grow: 1;
+}
+
+.reviewFooter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.palkaIcon {
+  width: 18.33px;
+  height: 15px;
+}
+
+.reviewAuthor {
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748B;
+}
+
+.paginationDots {
+  text-align: center;
+  margin-top: 24px;
+}
+
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #E2E8F0;
+  margin: 0 5px;
+  transition: background-color 0.3s ease;
+}
+
+.dotActive {
+  background-color: #3B82F6;
+}
+
+/* --- Планшеты --- */
+@media (max-width: 992px) {
+  .reviewCard {
+    flex-basis: calc((100% - 24px) / 2); 
+  }
+}
+
+/* --- Мобильные телефоны --- */
+@media (max-width: 768px) {
+  .aboutPageContainer {
+    padding: 20px 0; /* Убираем боковые отступы, так как у sectionWrapper они есть */
+  }
+  .sectionWrapper {
+    padding: 24px 20px; /* Делаем вертикальные отступы чуть меньше */
+    border-radius: 0; /* На мобильных часто убирают скругление для блоков на всю ширину */
+  }
+  .title {
+    font-size: 28px;
+  }
+  .aboutSection {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .reviewCard {
+    /* Каждая карточка занимает 90% ширины, чтобы было видно край следующей */
+    flex-basis: 90%; 
+    padding: 20px;
+  }
+  /* Добавляем отступ для самого контейнера, чтобы карточки не прилипали к краю */
+  .reviewsCarousel {
+    padding-left: 20px;
+    padding-right: 20px;
+    /* Убираем привязку к контейнеру, чтобы можно было оставить карточку по центру */
+    scroll-snap-type: none;
+  }
+}

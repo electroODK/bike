@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
-import styles from '../components/Auth.module.css';
-import OpenEye from '../assets/images/openeye.png';
-import CloseEye from '../assets/images/closeeye.png';
-import { register } from '../api/api.js'; // теперь из общего api.js
-
+import React, { useState } from "react";
+import styles from "../components/Auth.module.css";
+import OpenEye from "../assets/images/openeye.png";
+import CloseEye from "../assets/images/closeeye.png";
+import { register } from "../api/api.js"; // теперь из общего api.js
 const Register = ({ isOpen, onClose, onSwitchToLogin, onRegisterSuccess }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    phone_number: '', // ⚡ имя поля как в бэке
-    email: '',
-    password: '',
+    name: "",
+    phone_number: "", // ⚡ имя поля как в бэке
+    email: "",
+    password: "",
   });
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -29,7 +28,7 @@ const Register = ({ isOpen, onClose, onSwitchToLogin, onRegisterSuccess }) => {
     setError(null);
 
     if (!agreeTerms) {
-      setError('Необходимо согласие на обработку персональных данных');
+      setError("Необходимо согласие на обработку персональных данных");
       return;
     }
 
@@ -39,8 +38,8 @@ const Register = ({ isOpen, onClose, onSwitchToLogin, onRegisterSuccess }) => {
       const { data } = await register(formData);
 
       // ⚡ предполагаем, что бэк вернет { access_token, refresh_token, user }
-      localStorage.setItem('access_token', data.access_token);
-      localStorage.setItem('refresh_token', data.refresh_token);
+      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("refresh_token", data.refresh_token);
 
       // сообщаем родителю/контексту
       if (onRegisterSuccess) onRegisterSuccess(data.user);
@@ -48,7 +47,7 @@ const Register = ({ isOpen, onClose, onSwitchToLogin, onRegisterSuccess }) => {
       onClose(); // закрыть модалку
     } catch (err) {
       // если бэк вернет error.response.data.message
-      setError(err.response?.data?.message || 'Ошибка регистрации');
+      setError(err.response?.data?.message || "Ошибка регистрации");
     } finally {
       setIsLoading(false);
     }
@@ -57,11 +56,17 @@ const Register = ({ isOpen, onClose, onSwitchToLogin, onRegisterSuccess }) => {
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-        <button onClick={onClose} className={styles.closeButton}>×</button>
+        <button onClick={onClose} className={styles.closeButton}>
+          ×
+        </button>
 
         <div className={styles.tabs}>
-          <button onClick={onSwitchToLogin} className={styles.tab}>Вход</button>
-          <button className={`${styles.tab} ${styles.activeTab}`}>Регистрация</button>
+          <button onClick={onSwitchToLogin} className={styles.tab}>
+            Вход
+          </button>
+          <button className={`${styles.tab} ${styles.activeTab}`}>
+            Регистрация
+          </button>
         </div>
 
         <form className={styles.form} onSubmit={handleSubmit}>
@@ -105,7 +110,7 @@ const Register = ({ isOpen, onClose, onSwitchToLogin, onRegisterSuccess }) => {
             <label>Пароль*</label>
             <div className={styles.passwordWrapper}>
               <input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Введите пароль"
                 value={formData.password}
@@ -132,18 +137,28 @@ const Register = ({ isOpen, onClose, onSwitchToLogin, onRegisterSuccess }) => {
               checked={agreeTerms}
               onChange={(e) => setAgreeTerms(e.target.checked)}
             />
-            <label htmlFor="agree">Согласие на обработку персональных данных</label>
+            <label htmlFor="agree">
+              Согласие на обработку персональных данных
+            </label>
           </div>
 
-          {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
+          {error && (
+            <p style={{ color: "red", textAlign: "center" }}>{error}</p>
+          )}
 
-          <button type="submit" className={styles.submitButton} disabled={isLoading}>
-            {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
+          <button
+            type="submit"
+            className={styles.submitButton}
+            disabled={isLoading}
+          >
+            {isLoading ? "Регистрация..." : "Зарегистрироваться"}
           </button>
 
           <p className={styles.switchForm}>
-            Уже авторизованы?{' '}
-            <button type="button" onClick={onSwitchToLogin}>Войти</button>
+            Уже авторизованы?{" "}
+            <button type="button" onClick={onSwitchToLogin}>
+              Войти
+            </button>
           </p>
         </form>
       </div>

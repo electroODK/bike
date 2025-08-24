@@ -1,36 +1,34 @@
 // src/components/Header.jsx
 
-import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
+import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
-import styles from './Header.module.css';
-import Login from './Login';
-import Register from './Register';
+import styles from "./Header.module.css";
+import Login from "./Login";
+import Register from "./Register";
 
-import { useApp } from '../../AuthContext.jsx';
-
-import logoImage from '../assets/images/Group 150.png';
-import profileImage from '../assets/images/Group 268.png';
-import notFoundImage from '../assets/images/full.png';
-import { useAuth } from './AuthContext.jsx';
+import logoImage from "../assets/images/Group 150.png";
+import profileImage from "../assets/images/Group 268.png";
+import notFoundImage from "../assets/images/full.png";
+import { useAuth } from "./AuthContext.jsx";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const timezones = [
-  { name: 'Dubai', zone: 'Asia/Dubai' },
-  { name: 'Moscow', zone: 'Europe/Moscow' },
-  { name: 'London', zone: 'Europe/London' },
-  { name: 'New York', zone: 'America/New_York' },
-  { name: 'Tokyo', zone: 'Asia/Tokyo' },
+  { name: "Dubai", zone: "Asia/Dubai" },
+  { name: "Moscow", zone: "Europe/Moscow" },
+  { name: "London", zone: "Europe/London" },
+  { name: "New York", zone: "America/New_York" },
+  { name: "Tokyo", zone: "Asia/Tokyo" },
 ];
 
 const languages = [
-  { code: 'RU', name: 'Русский' },
-  { code: 'EN', name: 'English' },
+  { code: "RU", name: "Русский" },
+  { code: "EN", name: "English" },
 ];
 
 const BurgerIcon = ({ isOpen, ...props }) => {
@@ -63,10 +61,10 @@ const BurgerIcon = ({ isOpen, ...props }) => {
 
 const Header = () => {
   // [ШАГ 2] Получаем состояние и функции из нашего AuthContext
-  const { isLoggedIn,isAdmin, login, logout } = useAuth();
+  const { isLoggedIn, isAdmin, login, logout } = useAuth();
 
   // Локальные состояния, которые нужны только этому компоненту, остаются здесь
-  const [currentTime, setCurrentTime] = useState('');
+  const [currentTime, setCurrentTime] = useState("");
   const [selectedTimezone, setSelectedTimezone] = useState(timezones[0]);
   const [isAvatarDropdownOpen, setAvatarDropdownOpen] = useState(false);
   const [isTimeDropdownOpen, setTimeDropdownOpen] = useState(false);
@@ -85,7 +83,7 @@ const Header = () => {
 
   // [ШАГ 4] Упрощаем обработчики. Теперь они вызывают функции из контекста.
   const handleLoginSuccess = (userData) => {
-    console.log('Пользователь успешно вошел, данные получены:', userData);
+    console.log("Пользователь успешно вошел, данные получены:", userData);
     login(userData.token); // Вызываем login из контекста
     setIsLoginOpen(false);
   };
@@ -97,7 +95,7 @@ const Header = () => {
   };
 
   const handleRegisterSuccess = () => {
-    console.log('Регистрация прошла успешно! Теперь пользователь может войти.');
+    console.log("Регистрация прошла успешно! Теперь пользователь может войти.");
     setIsRegisterOpen(false);
     setIsLoginOpen(true);
   };
@@ -105,7 +103,7 @@ const Header = () => {
   // Все useEffect, не связанные с авторизацией, остаются без изменений
   useEffect(() => {
     const update = () =>
-      setCurrentTime(dayjs().tz(selectedTimezone.zone).format('h:mm A'));
+      setCurrentTime(dayjs().tz(selectedTimezone.zone).format("h:mm A"));
     update();
     const timerId = setInterval(update, 1000);
     return () => clearInterval(timerId);
@@ -127,17 +125,17 @@ const Header = () => {
         setMobileMenuOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMobileMenuOpen]);
 
   useEffect(() => {
     const isAnyModalOpen = isLoginOpen || isRegisterOpen;
     const isAnyMenuOpen = isMobileMenuOpen;
     document.body.style.overflow =
-      isAnyModalOpen || isAnyMenuOpen ? 'hidden' : 'auto';
+      isAnyModalOpen || isAnyMenuOpen ? "hidden" : "auto";
     return () => {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = "auto";
     };
   }, [isLoginOpen, isRegisterOpen, isMobileMenuOpen]);
 
@@ -149,7 +147,7 @@ const Header = () => {
     <>
       <div
         className={`${styles.headerWrapper} ${
-          isMobileMenuOpen ? styles.isMenuOpen : ''
+          isMobileMenuOpen ? styles.isMenuOpen : ""
         }`}
         ref={headerWrapperRef}
       >
@@ -297,7 +295,7 @@ const Header = () => {
                     className={
                       selectedLang.code === lang.code
                         ? styles.langActiveTablet
-                        : ''
+                        : ""
                     }
                     onClick={() => setSelectedLang(lang)}
                   >
@@ -317,7 +315,7 @@ const Header = () => {
 
       <div
         className={`${styles.mobileMenuOverlay} ${
-          isMobileMenuOpen ? styles.mobileMenuOverlayOpen : ''
+          isMobileMenuOpen ? styles.mobileMenuOverlayOpen : ""
         }`}
         onClick={closeAllMenus}
       >
@@ -393,7 +391,7 @@ const Header = () => {
                 <React.Fragment key={lang.code}>
                   <button
                     className={
-                      selectedLang.code === lang.code ? styles.langActive : ''
+                      selectedLang.code === lang.code ? styles.langActive : ""
                     }
                     onClick={() => setSelectedLang(lang)}
                   >

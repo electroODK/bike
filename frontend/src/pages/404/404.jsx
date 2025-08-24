@@ -19,7 +19,7 @@ const Page404 = () => {
                     className={styles.errorCode} 
                 />
                 
-                <p className={styles.errorMessage}>The page does not exist or has not been created yet</p>
+                <p className={styles.errorMessage}>The page does not found</p>
                 <a href="/" className={`${styles.btn} ${styles.btnPrimary}`}>Back to main page</a>
             </main>
 
